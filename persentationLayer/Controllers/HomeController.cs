@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using persentationLayer.Models;
+using Demo.persentationLayer.Controllers;
+using persentationLayer.viewModels;
 using System.Diagnostics;
 
-namespace persentationLayer.Controllers
+namespace Demo.persentationLayer.Controllers
 {
     public class HomeController : Controller
     {

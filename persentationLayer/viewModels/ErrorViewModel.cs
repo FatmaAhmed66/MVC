@@ -1,4 +1,4 @@
-namespace persentationLayer.Models
+namespace persentationLayer.viewModels
 {
     public class ErrorViewModel
     {

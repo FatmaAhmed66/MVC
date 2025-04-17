@@ -1,4 +1,7 @@
+using Demo.BusnessLogicLayer.Services;
 using Demo.DataAcessLayer.Data;
+using Demo.DataAcessLayer.Data.Repositories.classes;
+using Demo.DataAcessLayer.Data.Repositories.interfacies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -28,7 +31,8 @@ namespace persentationLayer
 
 
             });
-
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            builder.Services.AddScoped<IDepartmentServices, DepartmentServices>();
 
             var app = builder.Build();
 

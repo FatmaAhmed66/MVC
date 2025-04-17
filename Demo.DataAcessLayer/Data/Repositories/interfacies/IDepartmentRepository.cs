@@ -10,7 +10,7 @@ namespace Demo.DataAcessLayer.Data.Repositories.interfacies
    public interface IDepartmentRepository
     {
         //GET ALL
-        IEnumerable<Department> GetAll(bool withtracking);
+        IEnumerable<Department> GetAll(bool withtracking = false);
 
         //GET BY ID
         Department GetById(int id);
