@@ -1,6 +1,8 @@
 ﻿using Demo.BusnessLogicLayer.DTO;
 using Demo.BusnessLogicLayer.DTO.EmployeeDTO;
 using Demo.BusnessLogicLayer.Services;
+using Demo.DataAcessLayer.Models.EmployeeModel;
+using Demo.persentationLayer.viewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.persentationLayer.Controllers
@@ -25,6 +27,14 @@ namespace Demo.persentationLayer.Controllers
         {
             var employee = _employeeService.GetAllEmployees();
 
+            //Binding through view’s dictionary : transfer Data From Action To View
+            // 1. ViewData
+
+            ViewData["Message"] = "Hello ViewData";
+            // 2. ViewBag
+            ViewBag.Message="Hello ViewBag";
+
+
             return View(employee);
         }
 
@@ -37,13 +47,27 @@ namespace Demo.persentationLayer.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(CreateDEmployeeDTO _createDEmployeeDTO)
+        public IActionResult Create(EmployeeViewModel _createDEmployeeDTO)
         {
             if (ModelState.IsValid) // Server side validation
             {
                 try
                 {
-                    int result = _employeeService.CreateEmployee(_createDEmployeeDTO);
+                    var employee = new CreateDEmployeeDTO()
+                    {
+                        Name=_createDEmployeeDTO.Name,
+                        IsActive=_createDEmployeeDTO.IsActive,
+                        Email=_createDEmployeeDTO.Email,
+                        Age=_createDEmployeeDTO.Age,
+                        Salary=_createDEmployeeDTO.Salary,
+                        Address=_createDEmployeeDTO.Address,
+                        Gender=_createDEmployeeDTO.Gender,
+                        EmployeeType=_createDEmployeeDTO.EmployeeType,
+                        PhoneNumber=_createDEmployeeDTO.PhoneNumber
+
+
+                    };
+                    int result = _employeeService.CreateEmployee(employee);
 
                     if (result > 0)
                     {
@@ -76,5 +100,138 @@ namespace Demo.persentationLayer.Controllers
 
         }
         #endregion
+
+        #region DETAILS
+        public IActionResult Details(int ? id)
+        {
+            if (!id.HasValue) return BadRequest();//400
+
+            var employee = _employeeService.GetEmployeeById(id.Value);
+            if (employee is null) return NotFound();//404
+            return View(employee);
+        }
+        #endregion
+
+        #region EDIT
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            if (!id.HasValue) return BadRequest();
+
+            var employee = _employeeService.GetEmployeeById(id.Value);
+            if (employee is null) return NotFound();//404
+
+            var employeeDTO = new EmployeeViewModel()
+            {
+
+               
+                Name = employee.Name,
+                Address = employee.Address,
+                Gender = Enum.Parse<Gender>(employee.Gender),
+                Email=employee.Email,
+                Age=employee.Age,
+                HiringDate=employee.HiringDate,
+                EmployeeType=Enum.Parse<EmployeeType>(employee.EmployeeType),
+                IsActive=employee.IsActive,
+                PhoneNumber=employee.PhoneNumber
+
+            };
+
+            return View(employeeDTO);
+
+
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit([FromRoute] int? id, EmployeeViewModel ViewModel)
+        {
+            if (!ModelState.IsValid) return View(ViewModel);
+            try
+            {
+
+                var employee = new UpdateEmployeeDTO()
+                {
+                    Id=id.Value,
+                    Name = ViewModel.Name,
+                    IsActive = ViewModel.IsActive,
+                    Email = ViewModel.Email,
+                    Age = ViewModel.Age,
+                    Salary = ViewModel.Salary,
+                    Address = ViewModel.Address,
+                    Gender = ViewModel.Gender,
+                    EmployeeType = ViewModel.EmployeeType,
+                    PhoneNumber = ViewModel.PhoneNumber
+
+
+                };
+
+
+                int result = _employeeService.UpdateEmployee(employee);
+                if (result > 0)
+                    return RedirectToAction(nameof(Index));
+
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Employee can't be created");
+
+                }
+            }
+            catch (Exception ex)
+            {
+                if (_environment.IsDevelopment())
+                {
+                    // 1. Development => Log Error in Console and return same view with error msg
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
+                else
+                {
+                    // 2. Deployment => Log Error in file | Table in database And Return Error view
+                    _logger.LogError(ex.Message);
+                }
+            }
+            return View(ViewModel);
+
+        }
+        #endregion
+
+        #region Delete
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            try
+            {
+                bool deleted = _employeeService.DeleteEmployee(id);
+                if (deleted)
+                    return RedirectToAction(nameof(Index));
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Employee is not Deleted");
+                    return RedirectToAction(nameof(Delete), new { id = id });
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                if (_environment.IsDevelopment())
+                {
+                    // 1. Development => Log Error in Console and return same view with error msg
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                    
+                }
+                else
+                {
+                    // 2. Deployment => Log Error in file | Table in database And Return Error view
+                    _logger.LogError(ex.Message);
+                    
+
+                }
+            }
+            return RedirectToAction(nameof(Index));
+            #endregion
+        }
+
     }
+       
+    
 }

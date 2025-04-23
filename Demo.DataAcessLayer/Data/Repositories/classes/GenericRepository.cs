@@ -37,10 +37,10 @@ namespace Demo.DataAcessLayer.Data.Repositories.classes
         {
             if (withtracking)
             {
-                return _dBCONTEXT.Set<T>().ToList();
+                return _dBCONTEXT.Set<T>().Where(E=>E.IsDeleted !=true).ToList();
             }
             else
-                return _dBCONTEXT.Set<T>().AsNoTracking().ToList();
+                return _dBCONTEXT.Set<T>().Where(E => E.IsDeleted != true).AsNoTracking().ToList();
         }
 
         public T GetById(int id)

@@ -1,14 +1,9 @@
 ﻿using Demo.DataAcessLayer.Models.EmployeeModel;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Demo.BusnessLogicLayer.DTO.EmployeeDTO
+namespace Demo.persentationLayer.viewModels
 {
-    public class UpdateEmployeeDTO
+    public class EmployeeViewModel
     {
         public int Id { get; set; }
         [Required]

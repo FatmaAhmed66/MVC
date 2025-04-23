@@ -46,10 +46,13 @@ namespace Demo.persentationLayer.Controllers
                     int result = _departmentServices.AddDpartment(departmentDTO);
                     if (result > 0)
                     {
+                        TempData["Message"] = "Employee created Sucessfully";
+
                         return RedirectToAction(nameof(Index));
                     }
                     else
                     {
+                        TempData["Message"] = "Employee creation failed";
                         ModelState.AddModelError(string.Empty, "Department can't be created");
                         
                     }
