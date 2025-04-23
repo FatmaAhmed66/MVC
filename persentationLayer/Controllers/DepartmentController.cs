@@ -51,7 +51,7 @@ namespace Demo.persentationLayer.Controllers
                     else
                     {
                         ModelState.AddModelError(string.Empty, "Department can't be created");
-                        return View(departmentDTO);
+                        
                     }
                 }
                 catch (Exception ex)
@@ -76,7 +76,18 @@ namespace Demo.persentationLayer.Controllers
         #endregion
 
 
-        #region details of department
+        #region Department Details
+        public IActionResult Details (int? id)
+        {
+            if (!id.HasValue) return BadRequest();//400
+
+            var department = _departmentServices.GETDepartmentById(id.Value);
+            if (department is null) return NotFound();//404
+            return View(department);
+        }
+        #endregion
+
+        #region edit of department
 
         [HttpGet]
         public IActionResult Edit(int? id)
@@ -140,6 +151,58 @@ namespace Demo.persentationLayer.Controllers
                 }
             }
             return View(departmentEditViewModel);
+
+        }
+        #endregion
+
+
+        #region delete
+
+        [HttpGet]
+        public IActionResult Delete(int? id)
+        {
+            if (!id.HasValue) return BadRequest();//400
+            var department = _departmentServices.GETDepartmentById(id.Value);
+
+            if (department is null) return NotFound();//404
+            return View(department);
+
+        }
+        [HttpPost]
+
+        public IActionResult Delete(int id)
+        {
+
+            if (id == 0) return BadRequest();
+            try
+            {
+                bool deleted = _departmentServices.DeleteDepartment(id);
+                if (deleted)
+                    return RedirectToAction(nameof(Index));
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "department is not Deleted");
+                    return RedirectToAction(nameof(Delete), new {id=id});
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                if (_environment.IsDevelopment())
+                {
+                    // 1. Development => Log Error in Console and return same view with error msg
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    // 2. Deployment => Log Error in file | Table in database And Return Error view
+                    _logger.LogError(ex.Message);
+                    return View("Error");
+
+                }
+            }
 
         }
         #endregion

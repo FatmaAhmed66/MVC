@@ -1,5 +1,6 @@
 ﻿using Demo.DataAcessLayer.Data.Configurations;
 using Demo.DataAcessLayer.Models;
+using Demo.DataAcessLayer.Models.EmployeeModel;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -32,5 +33,6 @@ namespace Demo.DataAcessLayer.Data
 
         }
         public DbSet<Department> departments { get; set; }
+        public DbSet<Employee> employees { get; set; }
     }
 }

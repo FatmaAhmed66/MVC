@@ -1,4 +1,5 @@
 ﻿using Demo.DataAcessLayer.Models;
+using Demo.DataAcessLayer.Models.EmployeeModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Demo.DataAcessLayer.Data.Repositories.interfacies
 {
-   public interface IDepartmentRepository:IGenericRepository<Department>
+    public interface IEmployeeRepository:IGenericRepository<Employee>
     {
-        
+        IQueryable<Employee> GetEmployeeByAddress(string address);
 
     }
 }

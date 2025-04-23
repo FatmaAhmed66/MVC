@@ -25,7 +25,7 @@ namespace Demo.BusnessLogicLayer.DTO
         public int LastModifiedBy { get; set; } //user id
 
         public string Name { get; set; } = string.Empty;
-        public string Code { get; set; }
+        public string? Code { get; set; }
         public string? Description { get; set; }
         public bool IsDeleted { get; set; } //soft Delete
     }

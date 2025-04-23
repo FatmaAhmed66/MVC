@@ -1,4 +1,6 @@
+using Demo.BusnessLogicLayer.Profiles;
 using Demo.BusnessLogicLayer.Services;
+using Demo.BusnessLogicLayer.Services.classes;
 using Demo.DataAcessLayer.Data;
 using Demo.DataAcessLayer.Data.Repositories.classes;
 using Demo.DataAcessLayer.Data.Repositories.interfacies;
@@ -31,8 +33,13 @@ namespace persentationLayer
 
 
             });
+
             builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             builder.Services.AddScoped<IDepartmentServices, DepartmentServices>();
+            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+            builder.Services.AddScoped<IEmployeeServices, EmployeeServices>();
+
 
             var app = builder.Build();
 
@@ -54,6 +61,9 @@ namespace persentationLayer
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+            app.MapControllerRoute(
+              name: "employee",
+              pattern: "Employee/{action=Index}/{id?}");
 
             app.Run();
         }
