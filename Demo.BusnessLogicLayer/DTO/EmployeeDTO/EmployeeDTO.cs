@@ -21,5 +21,7 @@ namespace Demo.BusnessLogicLayer.DTO.EmployeeDTO
         public string Gender { get; set; }
         [Display(Name = "Employee Type")]
         public string EmployeeType { get; set; }
+
+        public string Department { get; set; }
     }
 }

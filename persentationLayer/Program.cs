@@ -30,6 +30,7 @@ namespace persentationLayer
             builder.Services.AddDbContext<AppDBCONTEXT>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseLazyLoadingProxies();
 
 
             });
@@ -39,7 +40,7 @@ namespace persentationLayer
             builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             builder.Services.AddScoped<IEmployeeServices, EmployeeServices>();
-
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             var app = builder.Build();
 

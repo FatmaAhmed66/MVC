@@ -9,16 +9,31 @@ using System.Threading.Tasks;
 
 namespace Demo.DataAcessLayer.Data.Repositories.classes
 {
+
     public class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
     {
+        private readonly AppDBCONTEXT _dBCONTEXT;
 
-        public EmployeeRepository(AppDBCONTEXT _dBCONTEXT):base(_dBCONTEXT)
+        public EmployeeRepository(AppDBCONTEXT dBCONTEXT) : base(dBCONTEXT)
         {
-
+            _dBCONTEXT = dBCONTEXT;
         }
-        public IQueryable<Employee> GetEmployeeByAddress(string address)
+
+        public override IEnumerable<Employee> GetAll(bool withtracking = false)
         {
-            throw new NotImplementedException();
+            var query = _dBCONTEXT.employees
+                                  .Include(e => e.Department)
+                                  .Where(e => !e.IsDeleted);
+
+            return withtracking ? query.ToList() : query.AsNoTracking().ToList();
+        }
+
+       
+
+        public IQueryable<Employee> GetEmployeeByName(string Name)
+        {
+            return _dBCONTEXT.employees.Where(E => E.Name.ToLower().Contains(Name));
         }
     }
 }
+

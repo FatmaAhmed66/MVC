@@ -20,6 +20,8 @@ namespace Demo.DataAcessLayer.Data.Configurations
             builder.Property(D => D.CreatedOn).HasDefaultValueSql("GETDATE()");
             builder.Property(D => D.LastModifiedOn).HasComputedColumnSql("GETDATE()");//AUTOMATICLY CALCULATED
 
+            builder.HasMany(D => D.Employees)
+                    .WithOne(E => E.Department).OnDelete(DeleteBehavior.Cascade);
 
         }
     }

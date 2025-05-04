@@ -5,13 +5,15 @@ using Demo.DataAcessLayer.Models;
 
 namespace Demo.BusnessLogicLayer.Services
 {
-    public class DepartmentServices : IDepartmentServices
+    public class DepartmentServices : IDepartmentServices 
     {
         private readonly IDepartmentRepository _departmentRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DepartmentServices(IDepartmentRepository departmentRepository)
+        public DepartmentServices(IDepartmentRepository departmentRepository,IUnitOfWork unitOfWork)
         {
             _departmentRepository = departmentRepository;
+           _unitOfWork = unitOfWork;
             //CLR CREATES THE OBJECT (USE DEPENDENCY INJECTION)
         }
 
@@ -20,7 +22,7 @@ namespace Demo.BusnessLogicLayer.Services
         public IEnumerable<DepartmentDTO> GetAllDepartments()
         {
 
-            var departments = _departmentRepository.GetAll();
+            var departments = _unitOfWork.DepartmentRepository.GetAll();
 
             // 1] MANUAL MAPPING
             //    var departmentsToReturn = departments.Select(D=>new DepartmentDTO
@@ -36,15 +38,15 @@ namespace Demo.BusnessLogicLayer.Services
             //return departmentsToReturn;
 
             //2] EXTENSION MAPPING 
-            return departments.Select(D => D.ToDepartmentDTO())
-                ;
+            return departments.Select(D => D.ToDepartmentDTO());
+                
 
         }
 
         //GET DEPARTMENT BY ID
         public DepartmentsDetailsDTO GETDepartmentById(int id)
         {
-            var department = _departmentRepository.GetById(id);
+            var department = _unitOfWork.DepartmentRepository.GetById(id);
 
             //1]MANUAL MAPPING
 
@@ -75,7 +77,9 @@ namespace Demo.BusnessLogicLayer.Services
         {
             var department = departmentDTO.ToEntity();
 
-            return _departmentRepository.Add(department);
+            _unitOfWork.DepartmentRepository.Add(department);
+            return _unitOfWork.savechanges();
+
 
         }
 
@@ -84,8 +88,8 @@ namespace Demo.BusnessLogicLayer.Services
         {
             var department = departmentDTO.ToEntity();
 
-            return _departmentRepository.Update(department);
-
+            _unitOfWork.DepartmentRepository.Update(department);
+            return _unitOfWork.savechanges();
         }
 
         //delete department 
@@ -95,8 +99,8 @@ namespace Demo.BusnessLogicLayer.Services
             if (department is null) return false;
             else
             {
-                int result = _departmentRepository.Delete(department);
-                return result > 0 ? true : false;
+               _unitOfWork.DepartmentRepository.Delete(department);
+                return _unitOfWork.savechanges() > 0 ? true : false;
 
             }
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,10 @@ namespace Demo.DataAcessLayer.Models.EmployeeModel
         public DateTime HiringDate { get; set; }
         public Gender gender { get; set; }
         public EmployeeType employeeType { get; set; }
+        public virtual  Department Department { get; set; } //naviagtion property [1]
+        [Required]
+        [Display(Name = "Department")]
+        public int?  DepartmentId { get; set; } //FK COLOUMN
 
 
     }

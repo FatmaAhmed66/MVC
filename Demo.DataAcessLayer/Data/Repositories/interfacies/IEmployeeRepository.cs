@@ -10,7 +10,10 @@ namespace Demo.DataAcessLayer.Data.Repositories.interfacies
 {
     public interface IEmployeeRepository:IGenericRepository<Employee>
     {
-        IQueryable<Employee> GetEmployeeByAddress(string address);
+        
+
+        IQueryable<Employee> GetEmployeeByName(string Name);
+
 
     }
 }

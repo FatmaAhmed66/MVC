@@ -1,9 +1,11 @@
 ﻿using Demo.BusnessLogicLayer.DTO;
 using Demo.BusnessLogicLayer.DTO.EmployeeDTO;
 using Demo.BusnessLogicLayer.Services;
+using Demo.DataAcessLayer.Models;
 using Demo.DataAcessLayer.Models.EmployeeModel;
 using Demo.persentationLayer.viewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Demo.persentationLayer.Controllers
 {
@@ -13,28 +15,36 @@ namespace Demo.persentationLayer.Controllers
         private readonly IEmployeeServices _employeeService;
         private readonly ILogger<DepartmentController> _logger;
         private readonly IWebHostEnvironment _environment;
+        private readonly IDepartmentServices _departmentServices;
 
-
-        public EmployeeController(IEmployeeServices employeeService, ILogger<DepartmentController> logger,
-                                  IWebHostEnvironment environment)
+       public EmployeeController(IEmployeeServices employeeService, ILogger<DepartmentController> logger,
+                                  IWebHostEnvironment environment,IDepartmentServices departmentServices)
         {
             _employeeService = employeeService;
             _logger = logger;
             _environment = environment;
+            _departmentServices = departmentServices;
         }
         
-        public IActionResult Index()
+        public IActionResult Index(string? EmployeeSearchName)
         {
-            var employee = _employeeService.GetAllEmployees();
+
 
             //Binding through view’s dictionary : transfer Data From Action To View
             // 1. ViewData
 
-            ViewData["Message"] = "Hello ViewData";
-            // 2. ViewBag
-            ViewBag.Message="Hello ViewBag";
-
-
+            //ViewData["Message"] = "Hello ViewData";
+            //// 2. ViewBag
+            //ViewBag.Message="Hello ViewBag";
+            dynamic employee = null;
+            if (string.IsNullOrEmpty(EmployeeSearchName))
+            {
+                 employee = _employeeService.GetAllEmployees();
+            }
+            else
+            {
+                employee = _employeeService.GetEmployeesByName(EmployeeSearchName);
+            }
             return View(employee);
         }
 
@@ -43,6 +53,8 @@ namespace Demo.persentationLayer.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            ViewData["Departments"] = _departmentServices.GetAllDepartments();
+
             return View();
         }
 
@@ -63,21 +75,22 @@ namespace Demo.persentationLayer.Controllers
                         Address=_createDEmployeeDTO.Address,
                         Gender=_createDEmployeeDTO.Gender,
                         EmployeeType=_createDEmployeeDTO.EmployeeType,
-                        PhoneNumber=_createDEmployeeDTO.PhoneNumber
+                        PhoneNumber=_createDEmployeeDTO.PhoneNumber,
+                        DepartmentId = _createDEmployeeDTO.DepartmentId
 
 
                     };
-                    int result = _employeeService.CreateEmployee(employee);
+                    /*int result =*/ _employeeService.CreateEmployee(employee);
 
-                    if (result > 0)
-                    {
-                        return RedirectToAction(nameof(Index));
-                    }
-                    else
-                    {
-                        ModelState.AddModelError(string.Empty, "Department can't be created");
+                    //if (result > 0)
+                    //{
+                    //    return RedirectToAction(nameof(Index));
+                    //}
+                    //else
+                    //{
+                    //    ModelState.AddModelError(string.Empty, "Department can't be created");
                       
-                    }
+                    //}
                 }
                 catch (Exception ex)
                 {
@@ -134,8 +147,11 @@ namespace Demo.persentationLayer.Controllers
                 EmployeeType=Enum.Parse<EmployeeType>(employee.EmployeeType),
                 IsActive=employee.IsActive,
                 PhoneNumber=employee.PhoneNumber
+                
 
             };
+            ViewData["Departments"] = _departmentServices.GetAllDepartments();
+            
 
             return View(employeeDTO);
 

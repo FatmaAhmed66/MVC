@@ -13,16 +13,22 @@ namespace Demo.BusnessLogicLayer.Services
         //GET ALL EMPLOYEES
         IEnumerable<EmployeeDTO> GetAllEmployees(bool withtracking =false);
 
+
+        //GET EMPLOYEES BY NAME
+        IEnumerable<EmployeeDTO> GetEmployeesByName(string Name);
+
         //GET EMPLOYEE BY ID
         EmployeeDetailsDTO? GetEmployeeById(int id);
 
         //ADD NEW EMPLOYEE
-        int CreateEmployee(CreateDEmployeeDTO employee);
+       int CreateEmployee(CreateDEmployeeDTO employee);
 
         //UPDATE EMPLOYEE
         int UpdateEmployee(UpdateEmployeeDTO employee);
         //DELETE EMPLOYEE
         bool DeleteEmployee(int id);
+
+
 
 
   }

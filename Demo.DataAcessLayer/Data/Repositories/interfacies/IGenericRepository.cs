@@ -16,12 +16,12 @@ namespace Demo.DataAcessLayer.Data.Repositories.interfacies
         T GetById(int id);
 
         //UPDATE
-        int Update(T Entity);
+        void Update(T Entity);
 
         //DELETE
-        int Delete(T Enitity);
+        void Delete(T Enitity);
 
         //INSERT
-        int Add(T Entity);
+        void Add(T Entity);
     }
 }

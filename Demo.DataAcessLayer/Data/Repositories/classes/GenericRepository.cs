@@ -20,20 +20,19 @@ namespace Demo.DataAcessLayer.Data.Repositories.classes
                 _dBCONTEXT = dBCONTEXT;
             }
 
-        public int Add(T Entity)
+        public void Add(T Entity)
         {
             _dBCONTEXT.Set<T>().Add(Entity);
-            return _dBCONTEXT.SaveChanges();
+            
         }
 
-        public int Delete(T Enitity)
+        public void Delete(T Enitity)
         {
             _dBCONTEXT.Set<T>().Remove(Enitity);
-            return _dBCONTEXT.SaveChanges();
-
+            
         }
 
-        public IEnumerable<T> GetAll(bool withtracking = false)
+        public virtual IEnumerable<T> GetAll(bool withtracking = false)
         {
             if (withtracking)
             {
@@ -43,15 +42,17 @@ namespace Demo.DataAcessLayer.Data.Repositories.classes
                 return _dBCONTEXT.Set<T>().Where(E => E.IsDeleted != true).AsNoTracking().ToList();
         }
 
-        public T GetById(int id)
+        public virtual T GetById(int id)
         {
             return _dBCONTEXT.Set<T>().Find(id);
         }
 
-        public int Update(T Entity)
+
+
+        public void Update(T Entity)
         {
             _dBCONTEXT.Set<T>().Update(Entity);
-            return _dBCONTEXT.SaveChanges();
+         
         }
     }
 
