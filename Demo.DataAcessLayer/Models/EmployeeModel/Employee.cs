@@ -23,6 +23,8 @@ namespace Demo.DataAcessLayer.Models.EmployeeModel
         [Required]
         [Display(Name = "Department")]
         public int?  DepartmentId { get; set; } //FK COLOUMN
+       
+        public string? ImageName { get; set; }
 
 
     }

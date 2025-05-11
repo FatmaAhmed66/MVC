@@ -1,9 +1,12 @@
 using Demo.BusnessLogicLayer.Profiles;
 using Demo.BusnessLogicLayer.Services;
+using Demo.BusnessLogicLayer.Services.AttachmentServices;
 using Demo.BusnessLogicLayer.Services.classes;
 using Demo.DataAcessLayer.Data;
 using Demo.DataAcessLayer.Data.Repositories.classes;
 using Demo.DataAcessLayer.Data.Repositories.interfacies;
+using Demo.DataAcessLayer.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -41,7 +44,21 @@ namespace persentationLayer
             builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             builder.Services.AddScoped<IEmployeeServices, EmployeeServices>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IAttachmentServices, AttachmentService>();
+            //builder.Services.AddScoped<UserManager<ApplicationUser>>();
+            //builder.Services.AddScoped<SignInManager<ApplicationUser>>();
+            //builder.Services.AddScoped<RoleManager<ide>>();
 
+
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(Options =>
+            {
+
+                //Options.User.RequireUniqueEmail = true;
+                //Options.Password.RequireUppercase = tr
+
+
+            }).AddEntityFrameworkStores<AppDBCONTEXT>().AddDefaultTokenProviders();
+         
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -58,13 +75,12 @@ namespace persentationLayer
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
-            app.MapControllerRoute(
-              name: "employee",
-              pattern: "Employee/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=Register}/{id?}");
+          
 
             app.Run();
         }

@@ -28,7 +28,11 @@ namespace Demo.persentationLayer.viewModels
         public DateTime HiringDate { get; set; }
         public Gender Gender { get; set; }
         public EmployeeType EmployeeType { get; set; }
+        [Required]
         public int? DepartmentId { get; set; }
+        public IFormFile? Image { get; set; }
+
+
 
     }
 }

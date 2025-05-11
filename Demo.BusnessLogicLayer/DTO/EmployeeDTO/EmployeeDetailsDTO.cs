@@ -23,5 +23,8 @@ namespace Demo.BusnessLogicLayer.DTO.EmployeeDTO
         public DateTime CreatedOn { get; set; }
         public int LastModifiedBy { get; set; }
         public DateTime LastModifiedOn { get; set; }
+        public string? ImageName { get; set; }
+        
+        public int DepartmentId { get; set; }
     }
 }

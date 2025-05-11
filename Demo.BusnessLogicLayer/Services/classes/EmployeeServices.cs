@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Demo.BusnessLogicLayer.DTO.EmployeeDTO;
+using Demo.BusnessLogicLayer.Services.AttachmentServices;
 using Demo.DataAcessLayer.Data;
 using Demo.DataAcessLayer.Data.Repositories.classes;
 using Demo.DataAcessLayer.Data.Repositories.interfacies;
@@ -20,21 +21,27 @@ namespace Demo.BusnessLogicLayer.Services.classes
         
         private readonly IMapper _mapper;
         private readonly AppDBCONTEXT _context;
-
+        private readonly IAttachmentServices _attachmentServices;
         public IUnitOfWork UnitOfWork;
 
-        public EmployeeServices(IUnitOfWork unitOfWork, IMapper mapper, AppDBCONTEXT context)
+        public EmployeeServices(IUnitOfWork unitOfWork, IMapper mapper, AppDBCONTEXT context, IAttachmentServices attachmentServices)
         {
             UnitOfWork = unitOfWork;
             _mapper = mapper;
             _context = context;
+            _attachmentServices = attachmentServices;
         }
 
 
 
-        public int CreateEmployee(CreateDEmployeeDTO employee)
+        public int CreateEmployee(CreateDEmployeeDTO _createDEmployeeDTO)
         {
-            var Employee = _mapper.Map<CreateDEmployeeDTO, Employee>(employee);
+            var Employee = _mapper.Map<CreateDEmployeeDTO, Employee>(_createDEmployeeDTO);
+
+            if(_createDEmployeeDTO.Image is not null)
+            {
+                Employee.ImageName = _attachmentServices.Upload(_createDEmployeeDTO.Image, "Images");
+            }
              UnitOfWork.EmployeeRepository.Add(Employee);
             return UnitOfWork.savechanges();
 
@@ -44,12 +51,23 @@ namespace Demo.BusnessLogicLayer.Services.classes
         public bool DeleteEmployee(int id)
         {
             var employee = UnitOfWork.EmployeeRepository.GetById(id);
+
             if (employee == null) return false;
             else
             {
                 employee.IsDeleted = true;
                UnitOfWork.EmployeeRepository.Update(employee);
-                return UnitOfWork.savechanges() > 0 ? true : false;
+                int result = UnitOfWork.savechanges();
+                if (result > 0)
+                {
+                    _attachmentServices.Delete(employee.ImageName, "images");
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+               
 
             }
         }

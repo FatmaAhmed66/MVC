@@ -1,4 +1,5 @@
 ﻿using Demo.DataAcessLayer.Models.EmployeeModel;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -29,11 +30,13 @@ namespace Demo.BusnessLogicLayer.DTO.EmployeeDTO
         [Phone]
         public string? PhoneNumber { get; set; }
         [Display(Name = "Hiring Date")]
+        [DataType(DataType.Date)]
         public DateTime HiringDate { get; set; }
         public Gender Gender { get; set; }
 
         [Display(Name ="Employee Type")]
         public EmployeeType EmployeeType { get; set; }
         public int? DepartmentId { get; set; }
+        public IFormFile? Image { get; set; }
     }
 }

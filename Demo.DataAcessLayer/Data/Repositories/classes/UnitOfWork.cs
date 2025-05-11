@@ -9,14 +9,14 @@ namespace Demo.DataAcessLayer.Data.Repositories.classes
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private IDepartmentRepository _departmentRepository;
-        private IEmployeeRepository _employeeRepository;
+        private Lazy<IDepartmentRepository> _departmentRepository;
+        private Lazy<IEmployeeRepository> _employeeRepository;
         private readonly AppDBCONTEXT _dBCONTEXT;
 
         public UnitOfWork(IDepartmentRepository departmentRepository,IEmployeeRepository employeeRepository ,AppDBCONTEXT dBCONTEXT)
         {
-            _departmentRepository = departmentRepository;
-            _employeeRepository = employeeRepository;
+            _departmentRepository = new Lazy<IDepartmentRepository>(()=>new DepartmentRepository(dBCONTEXT));
+            _employeeRepository = new Lazy<IEmployeeRepository>(() => new EmployeeRepository(dBCONTEXT));
            _dBCONTEXT = dBCONTEXT;
         }
 
@@ -26,31 +26,30 @@ namespace Demo.DataAcessLayer.Data.Repositories.classes
 
             get
             {
-                return _employeeRepository;
+                return _employeeRepository .Value;
             }
 
-            set 
-            {
-                _employeeRepository = value;
-            } 
+         
         }
         IDepartmentRepository IUnitOfWork.DepartmentRepository
         {
 
             get
             {
-                return _departmentRepository;
+                return _departmentRepository.Value;
             }
 
-            set
-            {
-                _departmentRepository = value;
-            }
+         
         }
         public int savechanges()
         {
             return _dBCONTEXT.SaveChanges();
 
         }
+
+        //public void Dispose()
+        //{
+        //    _dBCONTEXT.Dispose();
+        //}
     }
 }

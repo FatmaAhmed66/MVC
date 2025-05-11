@@ -19,11 +19,13 @@ namespace Demo.BusnessLogicLayer.Profiles
             .ForMember(dest => dest.Department,options => options.MapFrom(src => src.Department != null ? src.Department.Name : null));
 
             CreateMap<Employee, EmployeeDetailsDTO>()
-               
+
             .ForMember(dest => dest.EmployeeType,
                 opt => opt.MapFrom(src => src.employeeType.ToString()))
             .ForMember(dest => dest.Gender,
                 opt => opt.MapFrom(src => src.gender.ToString()));
+                     
+
 
             CreateMap<CreateDEmployeeDTO, Employee>();
             CreateMap<UpdateEmployeeDTO, Employee>();

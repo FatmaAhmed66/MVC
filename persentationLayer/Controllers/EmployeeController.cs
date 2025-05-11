@@ -1,6 +1,7 @@
 ﻿using Demo.BusnessLogicLayer.DTO;
 using Demo.BusnessLogicLayer.DTO.EmployeeDTO;
 using Demo.BusnessLogicLayer.Services;
+using Demo.BusnessLogicLayer.Services.AttachmentServices;
 using Demo.DataAcessLayer.Models;
 using Demo.DataAcessLayer.Models.EmployeeModel;
 using Demo.persentationLayer.viewModels;
@@ -16,14 +17,16 @@ namespace Demo.persentationLayer.Controllers
         private readonly ILogger<DepartmentController> _logger;
         private readonly IWebHostEnvironment _environment;
         private readonly IDepartmentServices _departmentServices;
+        private readonly IAttachmentServices _attachmentServices;
 
-       public EmployeeController(IEmployeeServices employeeService, ILogger<DepartmentController> logger,
-                                  IWebHostEnvironment environment,IDepartmentServices departmentServices)
+        public EmployeeController(IEmployeeServices employeeService, ILogger<DepartmentController> logger,
+                                  IWebHostEnvironment environment,IDepartmentServices departmentServices ,IAttachmentServices attachmentServices)
         {
             _employeeService = employeeService;
             _logger = logger;
             _environment = environment;
             _departmentServices = departmentServices;
+            _attachmentServices = attachmentServices;
         }
         
         public IActionResult Index(string? EmployeeSearchName)
@@ -53,8 +56,10 @@ namespace Demo.persentationLayer.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            ViewData["Departments"] = _departmentServices.GetAllDepartments();
 
+
+            var departments = _departmentServices.GetAllDepartments(); 
+            ViewData["Departments"] = departments;
             return View();
         }
 
@@ -76,11 +81,14 @@ namespace Demo.persentationLayer.Controllers
                         Gender=_createDEmployeeDTO.Gender,
                         EmployeeType=_createDEmployeeDTO.EmployeeType,
                         PhoneNumber=_createDEmployeeDTO.PhoneNumber,
-                        DepartmentId = _createDEmployeeDTO.DepartmentId
+                        DepartmentId = _createDEmployeeDTO.DepartmentId,
+                        Image=_createDEmployeeDTO.Image,
+                        HiringDate = _createDEmployeeDTO.HiringDate,
+
 
 
                     };
-                    /*int result =*/ _employeeService.CreateEmployee(employee);
+                    int result = _employeeService.CreateEmployee(employee);
 
                     //if (result > 0)
                     //{
@@ -117,9 +125,12 @@ namespace Demo.persentationLayer.Controllers
         #region DETAILS
         public IActionResult Details(int ? id)
         {
+
+
             if (!id.HasValue) return BadRequest();//400
 
             var employee = _employeeService.GetEmployeeById(id.Value);
+
             if (employee is null) return NotFound();//404
             return View(employee);
         }
@@ -137,7 +148,7 @@ namespace Demo.persentationLayer.Controllers
             var employeeDTO = new EmployeeViewModel()
             {
 
-               
+              
                 Name = employee.Name,
                 Address = employee.Address,
                 Gender = Enum.Parse<Gender>(employee.Gender),
@@ -146,8 +157,9 @@ namespace Demo.persentationLayer.Controllers
                 HiringDate=employee.HiringDate,
                 EmployeeType=Enum.Parse<EmployeeType>(employee.EmployeeType),
                 IsActive=employee.IsActive,
-                PhoneNumber=employee.PhoneNumber
-                
+                PhoneNumber=employee.PhoneNumber,
+                DepartmentId = employee.DepartmentId,
+                Salary = employee.Salary
 
             };
             ViewData["Departments"] = _departmentServices.GetAllDepartments();
@@ -167,7 +179,7 @@ namespace Demo.persentationLayer.Controllers
 
                 var employee = new UpdateEmployeeDTO()
                 {
-                    Id=id.Value,
+                    
                     Name = ViewModel.Name,
                     IsActive = ViewModel.IsActive,
                     Email = ViewModel.Email,
@@ -176,7 +188,11 @@ namespace Demo.persentationLayer.Controllers
                     Address = ViewModel.Address,
                     Gender = ViewModel.Gender,
                     EmployeeType = ViewModel.EmployeeType,
-                    PhoneNumber = ViewModel.PhoneNumber
+                    PhoneNumber = ViewModel.PhoneNumber,
+                    HiringDate=ViewModel.HiringDate,
+                   
+                    
+
 
 
                 };
@@ -218,7 +234,10 @@ namespace Demo.persentationLayer.Controllers
             {
                 bool deleted = _employeeService.DeleteEmployee(id);
                 if (deleted)
+                {
+                    
                     return RedirectToAction(nameof(Index));
+                }
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Employee is not Deleted");
@@ -245,7 +264,12 @@ namespace Demo.persentationLayer.Controllers
             }
             return RedirectToAction(nameof(Index));
             #endregion
-        }
+
+
+
+
+           
+         }
 
     }
        

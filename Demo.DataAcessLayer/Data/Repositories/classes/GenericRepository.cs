@@ -42,9 +42,9 @@ namespace Demo.DataAcessLayer.Data.Repositories.classes
                 return _dBCONTEXT.Set<T>().Where(E => E.IsDeleted != true).AsNoTracking().ToList();
         }
 
-        public virtual T GetById(int id)
+        public virtual T? GetById(int id)
         {
-            return _dBCONTEXT.Set<T>().Find(id);
+            return _dBCONTEXT.Set<T>().FirstOrDefault(e => e.Id == id && !e.IsDeleted);
         }
 
 

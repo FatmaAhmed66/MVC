@@ -8,8 +8,8 @@ namespace Demo.DataAcessLayer.Data.Repositories.interfacies
 {
    public interface IUnitOfWork
     {
-        public IEmployeeRepository EmployeeRepository { get; set; }
-        public IDepartmentRepository DepartmentRepository { get; set; }
+        public IEmployeeRepository EmployeeRepository { get; }
+        public IDepartmentRepository DepartmentRepository { get; }
 
         int savechanges();
 
